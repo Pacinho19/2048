@@ -13,17 +13,15 @@ import static pl.pacinho.config.Properties.SIZE;
 
 public class GameBoard extends JFrame {
 
-    private GameBoardController gameBoardController;
-
     private final GameBoard self = this;
-
+    private GameBoardController gameBoardController;
     @Getter
     private Container board;
 
     public GameBoard() {
         this.setTitle("2048");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setSize(400, 400);
+        this.setSize(600, 600);
         this.setLocationRelativeTo(null);
 
         gameBoardController = new GameBoardController(self);
@@ -43,16 +41,16 @@ public class GameBoard extends JFrame {
             }
         }
 
-        gameBoardController.addStartCell();
+        gameBoardController.addCell(true);
     }
 
     private void initActions() {
-board.addKeyListener(new KeyAdapter() {
-    @Override
-    public void keyTyped(KeyEvent e) {
-        gameBoardController.move(e);
-    }
-});
+        self.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                gameBoardController.move(e);
+            }
+        });
     }
 
 }

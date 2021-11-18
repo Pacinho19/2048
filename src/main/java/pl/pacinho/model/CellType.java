@@ -18,19 +18,35 @@ public enum CellType {
     _256(256, Color.ORANGE),
     _512(512, Color.RED),
     _1024(1024, Color.GRAY),
-    _2048(2048, Color.YELLOW);
+    _2048(2048, Color.YELLOW),
+    _NONE(0, null);
 
 
-    CellType(int number, Color color) {
+    private int number;
+    private Color color;
+    private CellType next;
+
+    CellType(int number, Color color ) {
         this.color = color;
         this.number = number;
     }
 
-    private int number;
-    private Color color;
+    static{
+        _2.next=_4;
+        _4.next=_8;
+        _8.next=_16;
+        _16.next=_32;
+        _32.next=_64;
+        _64.next=_128;
+        _128.next=_256;
+        _256.next=_512;
+        _512.next=_1024;
+        _1024.next=_2048;
+        _2048.next=null;
+    }
 
-    public  String getCellText(){
-        if(this==_EMPTY){
+    public String getCellText() {
+        if (this == _EMPTY) {
             return "";
         }
         return String.valueOf(number);

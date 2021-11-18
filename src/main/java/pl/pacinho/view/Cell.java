@@ -1,5 +1,6 @@
 package pl.pacinho.view;
 
+import lombok.Getter;
 import pl.pacinho.model.CellType;
 
 import javax.swing.*;
@@ -8,6 +9,7 @@ import java.awt.*;
 
 public class Cell extends JPanel {
 
+    @Getter
     private CellType cellType;
 
     public Cell(CellType cellType) {
