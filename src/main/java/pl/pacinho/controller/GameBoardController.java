@@ -55,26 +55,6 @@ public class GameBoardController {
     }
 
     public void move(KeyEvent e) {
-//        boolean addNewCell = false;
-//        switch (e.getKeyCode()) {
-//            case KeyEvent.VK_UP:
-//                addNewCell = moveUp();
-//                break;
-//            case KeyEvent.VK_DOWN:
-//                addNewCell = moveDown();
-//                break;
-//            case KeyEvent.VK_LEFT:
-//                addNewCell = moveLeft();
-//                break;
-//            case KeyEvent.VK_RIGHT:
-//                addNewCell = moveRight();
-//                break;
-//            default:
-//                return;
-//        }
-//        if (addNewCell)
-//            addCell(false);
-
         if (singleMove(MoveType.findByVK(e.getKeyCode())))
             addCell(false);
     }
