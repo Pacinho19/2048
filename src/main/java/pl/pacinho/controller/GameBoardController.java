@@ -98,6 +98,7 @@ public class GameBoardController {
                     mergedIdx.add(idxNext);
                     replaceCell(i, new Cell(cell.getCellType().getNext()), idxNext);
                     addNewCell = true;
+                    break;
                 } else {
                     nonAvailableMoveCount++;
                 }
