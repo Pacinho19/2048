@@ -67,10 +67,18 @@ public class GameBoardController {
         gameBoard.getBoard().remove(indexByColAndRow);
         gameBoard.getBoard().add(cell, indexByColAndRow);
 
+        if(start){
+            GameLogic.addMove(gameBoard.getBoard().getComponents());
+        }
         refresh();
     }
 
     public void move(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_BACK_SPACE){
+            back();
+            return;
+        }
+
         MoveType byVK = MoveType.findByVK(e.getKeyCode());
         if (byVK == null) {
             return;
