@@ -9,6 +9,7 @@ import pl.pacinho.utils.GameLogic;
 import pl.pacinho.view.Cell;
 import pl.pacinho.view.GameBoard;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,8 +56,30 @@ public class GameBoardController {
     }
 
     public void move(KeyEvent e) {
-        if (singleMove(MoveType.findByVK(e.getKeyCode())))
+        MoveType byVK = MoveType.findByVK(e.getKeyCode());
+        if (byVK == null) {
+            return;
+        }
+        if (singleMove(byVK)) {
             addCell(false);
+        }
+        if (checkEnd()) {
+            JOptionPane.showMessageDialog(gameBoard, "Koniec gry !");
+            gameBoard.getBoard().setEnabled(false);
+        }
+
+        calculateScore();
+    }
+
+    private void calculateScore() {
+        Integer sum = Arrays.asList(gameBoard.getBoard().getComponents())
+                .stream()
+                .map(c -> (Cell) c)
+                .map(c -> c.getCellType().getNumber())
+                .reduce(0, (a, b) -> a + b);
+
+        gameBoard.getScoreValueL().setText(String.valueOf(sum));
+
     }
 
     private boolean singleMove(MoveType moveType) {
@@ -74,7 +97,7 @@ public class GameBoardController {
                  moveType == MoveType.UP || moveType == MoveType.LEFT ? (i < iterateParameters.getISize()) : i >= iterateParameters.getISize();
                  i++) {
                 if (i >= SIZE * SIZE) {
-                   break;
+                    break;
                 }
                 Cell cell = out.get(i);
                 int idxNext = GameLogic.getNextIdx(i, moveType);
@@ -123,5 +146,66 @@ public class GameBoardController {
         gameBoard.repaint();
         gameBoard.revalidate();
         gameBoard.validate();
+    }
+
+    private boolean checkEnd() {
+        List<Cell> cells = Arrays.asList(gameBoard.getBoard().getComponents())
+                .stream()
+                .map(c -> (Cell) c)
+                .collect(Collectors.toList());
+
+        if (cells.stream().filter(c -> c.getCellType() == CellType._EMPTY).findAny().isPresent()) {
+            return false;
+        }
+
+        for (int i = 0; i < cells.size(); i++) {
+            Cell cell = cells.get(i);
+            //go Left
+            if (!leftWallIdx.contains(i)) {
+                boolean endLeft = false;
+                while (!endLeft) {
+                    int idxNext = i - 1;
+                    if (checkMerge(cells, cell, idxNext)) return false;
+                    endLeft = true;
+                }
+            }
+            //go Right
+            if (!rightWallIdx.contains(i)) {
+                boolean endRight = false;
+                while (!endRight) {
+                    int idxNext = i + 1;
+                    if (checkMerge(cells, cell, idxNext)) return false;
+                    endRight = true;
+                }
+            }
+            //go Up
+            if (i - SIZE > 0) {
+                boolean enUp = false;
+                while (!enUp) {
+                    int idxNext = i - SIZE;
+                    if (checkMerge(cells, cell, idxNext)) return false;
+                    enUp = true;
+                }
+            }
+            //do Down
+            if (i + SIZE < SIZE * SIZE) {
+                boolean endDown = false;
+                while (!endDown) {
+                    int idxNext = i + SIZE;
+                    if (checkMerge(cells, cell, idxNext)) return false;
+                    endDown = true;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean checkMerge(List<Cell> cells, Cell cell, int idxNext) {
+        Cell cel2 = cells.get(idxNext);
+        if (cel2.getCellType() == cell.getCellType()) {
+            return true;
+        }
+        return false;
     }
 }

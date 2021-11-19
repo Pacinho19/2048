@@ -56,7 +56,7 @@ public class GameLogic {
                 return new IterateParameters(outSize-1, 0);
             default:
                 return new IterateParameters(0, outSize);
-
         }
     }
+
 }

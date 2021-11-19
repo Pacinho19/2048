@@ -3,6 +3,7 @@ package pl.pacinho.view;
 import lombok.Getter;
 import pl.pacinho.controller.GameBoardController;
 import pl.pacinho.model.CellType;
+import springutilities.SpringUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,14 +26,23 @@ public class GameBoard extends JFrame {
         this.setLocationRelativeTo(null);
 
         gameBoardController = new GameBoardController(self);
-
-        init();
+        initComponents();
+        initView();
         initActions();
     }
 
+    private void initComponents(){
+        board = new JPanel();
+        scoreL = new JLabel("Score : ");
+        scoreL.setFont(new Font("Serif", Font.BOLD, 20));
+        scoreValueL = new JLabel("2");
+        scoreValueL.setFont(new Font("Serif", Font.BOLD, 20));
+    }
 
-    private void init() {
-        board = self.getContentPane();
+    private void initView() {
+        Container main  = self.getContentPane();
+        main.setLayout(new BorderLayout());
+
         board.setLayout(new GridLayout(SIZE, SIZE));
 
         for (int i = 0; i < SIZE; i++) {
@@ -42,6 +52,16 @@ public class GameBoard extends JFrame {
         }
 
         gameBoardController.addCell(true);
+        main.add(board, BorderLayout.CENTER);
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        JPanel scorePanel = new JPanel(new SpringLayout());
+        scorePanel.add(scoreL);
+        scorePanel.add(scoreValueL);
+        SpringUtilities.makeCompactGrid(scorePanel, 1, 2, 5, 5, 5, 5);
+
+        topPanel.add(scorePanel, BorderLayout.WEST);
+        main.add(topPanel, BorderLayout.NORTH);
     }
 
     private void initActions() {
@@ -53,4 +73,7 @@ public class GameBoard extends JFrame {
         });
     }
 
+    private JLabel scoreL;
+    @Getter
+    private JLabel scoreValueL;
 }
