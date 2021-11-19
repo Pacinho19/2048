@@ -9,7 +9,9 @@ import pl.pacinho.view.Cell;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static pl.pacinho.config.Properties.SIZE;
 
@@ -72,5 +74,12 @@ public class GameLogic {
         }
         moves.remove(moves.size()-1);
         return moves.get(moves.size() - 1);
+    }
+
+    public static List<Cell> parseArray(Component[] components){
+        return Arrays.asList(components)
+                .stream()
+                .map(c -> (Cell) c)
+                .collect(Collectors.toList());
     }
 }

@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import static pl.pacinho.config.Properties.SIZE;
 
@@ -34,6 +36,8 @@ public class GameBoard extends JFrame {
         initComponents();
         initView();
         initActions();
+
+        gameBoardController.loadPrevGame();
     }
 
     private void initComponents() {
@@ -84,6 +88,14 @@ public class GameBoard extends JFrame {
             gameBoardController.back();
             self.setFocusable(true);
             self.requestFocusInWindow();
+        });
+
+        self.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                gameBoardController.saveGame();
+            }
         });
     }
 }

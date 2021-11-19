@@ -3,6 +3,7 @@ package pl.pacinho.model;
 import lombok.Getter;
 
 import java.awt.*;
+import java.util.Arrays;
 
 @Getter
 public enum CellType {
@@ -53,5 +54,12 @@ public enum CellType {
             return "";
         }
         return String.valueOf(number);
+    }
+
+    public static CellType findByNumber(int number){
+        return Arrays.stream(CellType.values())
+                .filter(ct -> ct.getNumber()==number)
+                .findFirst()
+                .orElse(_EMPTY);
     }
 }

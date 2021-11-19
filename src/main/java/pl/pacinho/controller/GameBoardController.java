@@ -1,6 +1,7 @@
 package pl.pacinho.controller;
 
 import javafx.util.Pair;
+import pl.pacinho.db.DbManager;
 import pl.pacinho.model.CellType;
 import pl.pacinho.model.IterateParameters;
 import pl.pacinho.model.MoveType;
@@ -13,9 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static pl.pacinho.config.Properties.SIZE;
 
@@ -26,10 +25,12 @@ public class GameBoardController {
     private List<Integer> rightWallIdx;
     private List<Integer> leftWallIdx;
 
+    private DbManager dbManager;
 
     private boolean win = false;
 
     public GameBoardController(GameBoard gameBoard) {
+        dbManager = DbManager.getInstance();
         this.gameBoard = gameBoard;
         rightWallIdx = GameLogic.getWallIdx(WallType.RIGHT);
         leftWallIdx = GameLogic.getWallIdx(WallType.LEFT);
@@ -70,7 +71,7 @@ public class GameBoardController {
         gameBoard.getBoard().remove(indexByColAndRow);
         gameBoard.getBoard().add(cell, indexByColAndRow);
 
-        if(start){
+        if (start) {
             GameLogic.addMove(gameBoard.getBoard().getComponents());
         }
         refresh();
@@ -78,11 +79,11 @@ public class GameBoardController {
 
     public void move(KeyEvent e) {
 
-        if(!gameBoard.getContentPane().isEnabled()){
-           return;
+        if (!gameBoard.getContentPane().isEnabled()) {
+            return;
         }
 
-        if(e.getKeyCode()==KeyEvent.VK_BACK_SPACE){
+        if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
             back();
             return;
         }
@@ -103,7 +104,7 @@ public class GameBoardController {
         }
 
         if (checkWin() && !win) {
-            win= true;
+            win = true;
             JOptionPane.showMessageDialog(gameBoard, "Wygrana !");
         }
 
@@ -111,22 +112,20 @@ public class GameBoardController {
     }
 
     private boolean checkWin() {
-        Integer max = Arrays.asList(gameBoard.getBoard().getComponents())
+        Integer max = GameLogic.parseArray(gameBoard.getBoard().getComponents())
                 .stream()
-                .map(c -> (Cell) c)
                 .map(c -> c.getCellType().getNumber())
                 .max(Integer::compareTo).get();
-        return max==2048;
+        return max == 2048;
     }
 
     private void calculateScore() {
-        Integer sum = Arrays.asList(gameBoard.getBoard().getComponents())
+        Integer sum = GameLogic.parseArray(gameBoard.getBoard().getComponents())
                 .stream()
-                .map(c -> (Cell) c)
                 .map(c -> c.getCellType().getNumber())
                 .reduce(0, (a, b) -> a + b);
 
-        gameBoard.getScoreValueL().setText(String.valueOf(sum)+"   ");
+        gameBoard.getScoreValueL().setText(String.valueOf(sum) + "   ");
 
     }
 
@@ -140,7 +139,7 @@ public class GameBoardController {
 
         while (nonAvailableMoveCount < SIZE * SIZE) {
             nonAvailableMoveCount = 0;
-            List<Cell> out = Arrays.stream(gameBoard.getBoard().getComponents()).map(c -> (Cell) c).collect(Collectors.toList());
+            List<Cell> out = GameLogic.parseArray(gameBoard.getBoard().getComponents());
             for (int i = iterateParameters.getIStart();
                  moveType == MoveType.UP || moveType == MoveType.LEFT ? (i < iterateParameters.getISize()) : i >= iterateParameters.getISize();
                  i++) {
@@ -199,10 +198,7 @@ public class GameBoardController {
     }
 
     private boolean checkEnd() {
-        List<Cell> cells = Arrays.asList(gameBoard.getBoard().getComponents())
-                .stream()
-                .map(c -> (Cell) c)
-                .collect(Collectors.toList());
+        List<Cell> cells = GameLogic.parseArray(gameBoard.getBoard().getComponents());
 
         if (cells.stream().filter(c -> c.getCellType() == CellType._EMPTY).findAny().isPresent()) {
             return false;
@@ -257,5 +253,31 @@ public class GameBoardController {
             return true;
         }
         return false;
+    }
+
+    public void loadPrevGame() {
+        List<Cell> lastGame = dbManager.getLastGame();
+        if (lastGame.isEmpty()) {
+            return;
+        }
+
+        int result = JOptionPane.showConfirmDialog(
+                gameBoard,
+                "Load previous game?",
+                "Load Game",
+                JOptionPane.YES_NO_OPTION);
+
+        if (result == 0) {
+            gameBoard.getBoard().removeAll();
+            lastGame.forEach(c -> gameBoard.getBoard().add(c));
+            GameLogic.addMove(gameBoard.getBoard().getComponents());
+            refresh();
+        }
+    }
+
+    public void saveGame() {
+        dbManager.clearTable();
+        GameLogic.parseArray(gameBoard.getBoard().getComponents())
+                .forEach(dbManager::saveCell);
     }
 }
