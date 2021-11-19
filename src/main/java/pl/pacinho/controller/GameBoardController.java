@@ -74,6 +74,11 @@ public class GameBoardController {
     }
 
     public void move(KeyEvent e) {
+
+        if(!gameBoard.getContentPane().isEnabled()){
+           return;
+        }
+
         if(e.getKeyCode()==KeyEvent.VK_BACK_SPACE){
             back();
             return;
@@ -92,9 +97,26 @@ public class GameBoardController {
 
         if (checkEnd()) {
             JOptionPane.showMessageDialog(gameBoard, "Koniec gry !");
-            gameBoard.getBoard().setEnabled(false);
+            gameBoard.getContentPane().setEnabled(false);
+            gameBoard.getBackJB().setEnabled(false);
         }
+
+        if (checkWin()) {
+            JOptionPane.showMessageDialog(gameBoard, "Wygrana !");
+            gameBoard.getContentPane().setEnabled(false);
+            gameBoard.getBackJB().setEnabled(false);
+        }
+
         calculateScore();
+    }
+
+    private boolean checkWin() {
+        Integer max = Arrays.asList(gameBoard.getBoard().getComponents())
+                .stream()
+                .map(c -> (Cell) c)
+                .map(c -> c.getCellType().getNumber())
+                .max(Integer::compareTo).get();
+        return max==2048;
     }
 
     private void calculateScore() {
