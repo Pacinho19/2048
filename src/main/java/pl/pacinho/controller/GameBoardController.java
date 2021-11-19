@@ -126,7 +126,7 @@ public class GameBoardController {
                 .map(c -> c.getCellType().getNumber())
                 .reduce(0, (a, b) -> a + b);
 
-        gameBoard.getScoreValueL().setText(String.valueOf(sum));
+        gameBoard.getScoreValueL().setText(String.valueOf(sum)+"   ");
 
     }
 

@@ -40,7 +40,7 @@ public class GameBoard extends JFrame {
         board = new JPanel();
         scoreL = new JLabel("Score : ");
         scoreL.setFont(new Font("Serif", Font.BOLD, 20));
-        scoreValueL = new JLabel("2         ");
+        scoreValueL = new JLabel("2");
         scoreValueL.setFont(new Font("Serif", Font.BOLD, 20));
 
         backJB = new JButton("Back");
