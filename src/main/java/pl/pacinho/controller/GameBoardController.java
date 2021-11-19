@@ -26,6 +26,9 @@ public class GameBoardController {
     private List<Integer> rightWallIdx;
     private List<Integer> leftWallIdx;
 
+
+    private boolean win = false;
+
     public GameBoardController(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
         rightWallIdx = GameLogic.getWallIdx(WallType.RIGHT);
@@ -97,14 +100,11 @@ public class GameBoardController {
 
         if (checkEnd()) {
             JOptionPane.showMessageDialog(gameBoard, "Koniec gry !");
-            gameBoard.getContentPane().setEnabled(false);
-            gameBoard.getBackJB().setEnabled(false);
         }
 
-        if (checkWin()) {
+        if (checkWin() && !win) {
+            win= true;
             JOptionPane.showMessageDialog(gameBoard, "Wygrana !");
-            gameBoard.getContentPane().setEnabled(false);
-            gameBoard.getBackJB().setEnabled(false);
         }
 
         calculateScore();
@@ -165,6 +165,7 @@ public class GameBoardController {
                 if (cell1.getCellType() == CellType._EMPTY) {
                     replaceCell(i, cell, idxNext);
                     addNewCell = true;
+                    break;
                 } else if (cell1.getCellType() == cell.getCellType() && !mergedIdx.contains(i)) {
                     mergedIdx.add(idxNext);
                     replaceCell(i, new Cell(cell.getCellType().getNext()), idxNext);
@@ -188,6 +189,7 @@ public class GameBoardController {
         gameBoard.getBoard().add(new Cell(cel1.getCellType()), idx2);
         gameBoard.getBoard().remove(idx1);
         gameBoard.getBoard().add(new Cell(CellType._EMPTY), idx1);
+        refresh();
     }
 
     private void refresh() {
