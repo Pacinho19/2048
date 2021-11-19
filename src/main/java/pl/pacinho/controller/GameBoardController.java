@@ -261,11 +261,12 @@ public class GameBoardController {
             return;
         }
 
-        int result = JOptionPane.showConfirmDialog(
-                gameBoard,
-                "Load previous game?",
-                "Load Game",
-                JOptionPane.YES_NO_OPTION);
+        int result = 0;
+//        JOptionPane.showConfirmDialog(
+//                gameBoard,
+//                "Load previous game?",
+//                "Load Game",
+//                JOptionPane.YES_NO_OPTION);
 
         if (result == 0) {
             gameBoard.getBoard().removeAll();
