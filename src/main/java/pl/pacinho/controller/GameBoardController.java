@@ -10,6 +10,7 @@ import pl.pacinho.view.Cell;
 import pl.pacinho.view.GameBoard;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,20 @@ public class GameBoardController {
         this.gameBoard = gameBoard;
         rightWallIdx = GameLogic.getWallIdx(WallType.RIGHT);
         leftWallIdx = GameLogic.getWallIdx(WallType.LEFT);
+    }
+
+    public void back() {
+        Component[] lastMove = GameLogic.getLastMove();
+        if (lastMove == null) {
+            return;
+        }
+
+        gameBoard.getBoard().removeAll();
+        for (Component component : lastMove) {
+            gameBoard.getBoard().add(component);
+        }
+        calculateScore();
+        refresh();
     }
 
     public void addCell(boolean start) {
@@ -60,14 +75,17 @@ public class GameBoardController {
         if (byVK == null) {
             return;
         }
+
         if (singleMove(byVK)) {
             addCell(false);
         }
+
+        GameLogic.addMove(gameBoard.getBoard().getComponents());
+
         if (checkEnd()) {
             JOptionPane.showMessageDialog(gameBoard, "Koniec gry !");
             gameBoard.getBoard().setEnabled(false);
         }
-
         calculateScore();
     }
 

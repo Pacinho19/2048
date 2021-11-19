@@ -18,6 +18,10 @@ public class GameBoard extends JFrame {
     private GameBoardController gameBoardController;
     @Getter
     private Container board;
+    private JLabel scoreL;
+    @Getter
+    private JLabel scoreValueL;
+    private JButton backJB;
 
     public GameBoard() {
         this.setTitle("2048");
@@ -31,18 +35,18 @@ public class GameBoard extends JFrame {
         initActions();
     }
 
-    private void initComponents(){
+    private void initComponents() {
         board = new JPanel();
         scoreL = new JLabel("Score : ");
         scoreL.setFont(new Font("Serif", Font.BOLD, 20));
         scoreValueL = new JLabel("2");
         scoreValueL.setFont(new Font("Serif", Font.BOLD, 20));
+
+        backJB = new JButton("Back");
     }
 
     private void initView() {
-        Container main  = self.getContentPane();
-        main.setLayout(new BorderLayout());
-
+        self.setLayout(new BorderLayout());
         board.setLayout(new GridLayout(SIZE, SIZE));
 
         for (int i = 0; i < SIZE; i++) {
@@ -52,7 +56,7 @@ public class GameBoard extends JFrame {
         }
 
         gameBoardController.addCell(true);
-        main.add(board, BorderLayout.CENTER);
+        self.add(board, BorderLayout.CENTER);
 
         JPanel topPanel = new JPanel(new BorderLayout());
         JPanel scorePanel = new JPanel(new SpringLayout());
@@ -61,19 +65,24 @@ public class GameBoard extends JFrame {
         SpringUtilities.makeCompactGrid(scorePanel, 1, 2, 5, 5, 5, 5);
 
         topPanel.add(scorePanel, BorderLayout.WEST);
-        main.add(topPanel, BorderLayout.NORTH);
+        topPanel.add(backJB, BorderLayout.EAST);
+
+        self.add(topPanel, BorderLayout.NORTH);
     }
 
     private void initActions() {
+        self.setFocusable(true);
+        self.requestFocusInWindow();
         self.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 gameBoardController.move(e);
             }
         });
+        backJB.addActionListener((e) -> {
+            gameBoardController.back();
+            self.setFocusable(true);
+            self.requestFocusInWindow();
+        });
     }
-
-    private JLabel scoreL;
-    @Getter
-    private JLabel scoreValueL;
 }

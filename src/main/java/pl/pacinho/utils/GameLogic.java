@@ -7,12 +7,15 @@ import pl.pacinho.model.MoveType;
 import pl.pacinho.model.WallType;
 import pl.pacinho.view.Cell;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static pl.pacinho.config.Properties.SIZE;
 
 public class GameLogic {
+
+    private static List<Component[]> moves = new ArrayList<>();
 
     public static Pair<Integer, Integer> getRandomCellIndexes() {
         return new Pair<>(RandomUtils.getInt(0, SIZE - 1), RandomUtils.getInt(0, SIZE - 1));
@@ -53,10 +56,21 @@ public class GameLogic {
         switch (moveType) {
             case DOWN:
             case RIGHT:
-                return new IterateParameters(outSize-1, 0);
+                return new IterateParameters(outSize - 1, 0);
             default:
                 return new IterateParameters(0, outSize);
         }
     }
 
+    public static void addMove(Component[] components) {
+        moves.add(components);
+    }
+
+    public static Component[] getLastMove() {
+        if (moves.size() <= 1) {
+            return null;
+        }
+        moves.remove(moves.size()-1);
+        return moves.get(moves.size() - 1);
+    }
 }
