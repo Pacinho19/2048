@@ -272,6 +272,7 @@ public class GameBoardController {
             gameBoard.getBoard().removeAll();
             lastGame.forEach(c -> gameBoard.getBoard().add(c));
             GameLogic.addMove(gameBoard.getBoard().getComponents());
+            calculateScore();
             refresh();
         }
     }
