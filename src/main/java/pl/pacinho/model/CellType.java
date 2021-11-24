@@ -22,6 +22,7 @@ public enum CellType {
     _2048(2048, new Color(128,0,128)),
     _4096(4096, new Color(0,128,128)),
     _8192(8192, new Color(0,0,128)),
+    _16384(16384, new Color(244,164,96)),
     _NONE(0, null);
 
     private int number;
@@ -46,7 +47,8 @@ public enum CellType {
         _1024.next=_2048;
         _2048.next=_4096;
         _4096.next=_8192;
-        _8192.next=null;
+        _8192.next=_16384;
+        _16384.next=null;
     }
 
     public String getCellText() {
